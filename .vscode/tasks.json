@@ -1,0 +1,43 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "npm",
+      "script": "compile",
+      "group": "build",
+      "presentation": {
+        "panel": "shared",
+        "reveal": "silent",
+        "clear": true
+      },
+      "problemMatcher": ["$esbuild-watch"]
+    },
+    {
+      "type": "npm",
+      "script": "watch",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "never"
+      },
+      "problemMatcher": ["$esbuild-watch"],
+      "runOptions": {
+        "runOn": "folderOpen"
+      }
+    },
+    {
+      "type": "npm",
+      "script": "lint",
+      "group": "test",
+      "presentation": {
+        "panel": "shared",
+        "reveal": "silent",
+        "clear": true
+      },
+      "problemMatcher": ["$eslint-stylish"]
+    }
+  ]
+}

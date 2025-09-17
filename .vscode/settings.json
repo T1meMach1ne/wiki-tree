@@ -1,0 +1,26 @@
+{
+  "editor.insertSpaces": true,
+  "editor.tabSize": 2,
+  "editor.detectIndentation": false,
+  "editor.formatOnSave": true,
+  "typescript.preferences.quoteStyle": "single",
+  "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": false,
+  "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets": false,
+  "files.exclude": {
+    "out": false,
+    "node_modules": true,
+    ".vscode-test": true,
+    "*.vsix": true
+  },
+  "search.exclude": {
+    "out": true,
+    "node_modules": true,
+    ".vscode-test": true,
+    "*.vsix": true
+  },
+  "typescript.tsc.autoDetect": "off",
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
+  },
+  "eslint.validate": ["typescript"]
+}
