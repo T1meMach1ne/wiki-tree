@@ -1,4 +1,4 @@
-# Wiki Tree VSCode Extension - Specification
+﻿# Wiki Tree VSCode Extension - Specification
 
 ## 1. 系统概述
 
@@ -18,6 +18,23 @@
 - **环境**: VSCode Extension Host、Node.js 18.x LTS+
 - **架构**: 纯 VSCode 原生 API + 最小化 Webview
 
+### 1.3 术语说明
+
+| 术语/缩写 | 说明 | 关联章节 |
+| -------- | ---- | -------- |
+| 知识节点（WikiNode） | 代表一个文件、目录或知识片段，是 TreeView 的最小显示单元 | 4.1、4.2 |
+| 索引文件（index.json） | 扫描生成的结构化数据文件，驱动 TreeView、搜索和预览 | 2.2、4.3 |
+| 扫描配置（ScanConfig） | 控制扫描范围、过滤规则、输出路径的参数集合 | 2.1、6.1 |
+| 增量扫描 | 仅处理变更文件以缩短耗时的扫描策略 | 2.3、6.3 |
+| Webview | 为复杂交互提供的轻量页面容器，本项目仅在必要场景启用 | 4.4 |
+
+### 1.4 相关文档与依赖
+
+- 《API-Reference.md》：详细的接口签名与事件契约。
+- 《Implementation-Guide.md》：实现步骤、测试策略与 CI/CD 要求。
+- 《Frontend-Tech-Stack.md》：VSCode 插件技术栈决策与优化指南。
+- 《Quick-Start.md》：团队成员快速参与本项目的操作手册。
+- 《Troubleshooting.md》：常见问题与排障流程。
 ---
 
 ## 2. 功能规格说明
@@ -601,3 +618,4 @@ const FINAL_TECH_STACK = {
 **规范状态**: ✅ **已确认完成** - 所有关键问题已解决，可开始开发实现
 
 本规范文档遵循软件工程 Specification 原则，为 Wiki Tree 插件的开发提供完整的行为定义、约束条件和质量要求。所有技术决策已经过充分评估和确认，可以直接指导开发实现。
+
