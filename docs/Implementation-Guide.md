@@ -33,7 +33,10 @@ yo code
     "@vscode/vsce": "^2.22.0",
     "eslint": "^8.52.0",
     "@typescript-eslint/eslint-plugin": "^6.9.0",
-    "@typescript-eslint/parser": "^6.9.0"
+    "@typescript-eslint/parser": "^6.9.0",
+    "@types/jest": "^29.5.5",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1"
   },
   "dependencies": {
     "chokidar": "^3.5.3",
@@ -405,6 +408,7 @@ describe("Extension Integration", () => {
     expect(commands).toContain("wikiTree.search");
     expect(commands).toContain("wikiTree.refresh");
     expect(commands).toContain("wikiTree.previewDocument");
+    expect(commands).toContain("wikiTree.openFile");
   });
 });
 ```
@@ -426,6 +430,18 @@ describe("Extension Integration", () => {
         "command": "wikiTree.search",
         "title": "Wiki Tree: 搜索文档",
         "icon": "$(search)"
+      },
+      {
+        "command": "wikiTree.refresh",
+        "title": "Wiki Tree: 刷新树视图"
+      },
+      {
+        "command": "wikiTree.previewDocument",
+        "title": "Wiki Tree: 预览文档"
+      },
+      {
+        "command": "wikiTree.openFile",
+        "title": "Wiki Tree: 打开文件"
       }
     ],
     "configuration": {

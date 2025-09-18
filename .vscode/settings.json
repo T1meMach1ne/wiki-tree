@@ -22,5 +22,6 @@
   "editor.codeActionsOnSave": {
     "source.organizeImports": "explicit"
   },
-  "eslint.validate": ["typescript"]
+  "eslint.validate": ["typescript"],
+  "chatgpt.openOnStartup": true
 }

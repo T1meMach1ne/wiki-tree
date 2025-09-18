@@ -165,6 +165,53 @@ console.log(`扫描了 ${result.scannedFiles} 个文件`);
 
 **返回**: `Promise<ExportResult>`
 
+
+### wikiTree.refresh
+
+**描述**: 刷新文档树，使索引和状态栏与最新文件系统保持一致。
+
+**参数**: 无
+
+**返回**: `Promise<void>`
+
+**示例**:
+
+```typescript
+await vscode.commands.executeCommand("wikiTree.refresh");
+```
+
+### wikiTree.previewDocument
+
+**描述**: 在 VSCode 中预览或打开当前选中的文档节点。
+
+**参数**:
+
+- `node: WikiNode` - 选中的文档节点。
+
+**返回**: `Promise<void>`
+
+**示例**:
+
+```typescript
+await vscode.commands.executeCommand("wikiTree.previewDocument", selectedNode);
+```
+
+### wikiTree.openFile
+
+**描述**: 直接在文本编辑器中打开文档，适用于需要编辑原文件的场景。
+
+**参数**:
+
+- `node: WikiNode` - 选中的文档节点。
+
+**返回**: `Promise<void>`
+
+**示例**:
+
+```typescript
+await vscode.commands.executeCommand("wikiTree.openFile", selectedNode);
+```
+
 ## 配置项
 
 ### wikiTree.fileTypes
