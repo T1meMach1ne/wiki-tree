@@ -1,0 +1,31 @@
+# Exclude development sources and configuration
+src/**
+test/**
+__mocks__/**
+scripts/**
+.docs/**
+docs/**
+.vscode/**
+.git/**
+.gitignore
+.eslintrc.cjs
+.prettierrc.json
+jest.config.cjs
+tsconfig.json
+tsconfig.eslint.json
+package-lock.json
+
+# Exclude logs and temp files
+*.log
+*.tsbuildinfo
+coverage/**
+
+# Exclude node_modules since esbuild bundles runtime deps
+node_modules/**
+
+# Keep compiled output and manifest
+!out/**
+!package.json
+!README.md
+!LICENSE
+!resources/**
