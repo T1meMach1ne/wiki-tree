@@ -137,6 +137,20 @@ interface StaticExporter {
 }
 ```
 
+**导出物规范**:
+
+- 输出目录必须位于工作区内且可写，导出前需清理旧版本或创建全新目录
+- 输出内容包含 `index.json` 副本、`documents/`（HTML 文档）、`assets/`（静态资源）、`manifest.json`（导出元数据）
+- `documents/` 中每个节点文件命名为 `{wikiNodeId}.html`，内容使用 UTF-8 编码并携带 `<meta charset="utf-8">`
+- 所有资源引用使用相对路径，禁止绝对磁盘路径或 `file://` 协议
+
+**验收准则**:
+
+- 导出后 `manifest.json` 记录导出时间、版本号、文档计数、警告信息
+- 失败时需回滚对 `outputDir` 的改动并返回部分失败详情
+- 通过校验所有 `links` 在导出目录中均能找到对应文件或外部 URL 可访问（HEAD 200/3xx）
+
+
 ### 2.2 数据结构规范
 
 #### 2.2.1 WikiIndex
@@ -193,11 +207,139 @@ interface WikiNode {
 - `type` 必须是 NodeType 枚举值之一
 - `path` 必须是相对路径，不能包含 `..`
 - `title` 不能为空字符串
-- `content` 仅对文档类型文件包含，限制 500 字符
-- `comments` 仅对代码类型文件包含
-- `tags` 数组中不能有重复值
+- `content` 仅对文档类型文件包含，限制 500 字符且移除 Markdown 标记后存储
+- `comments` 仅对代码类型文件包含，单条长度 ≤ 200 字符
+- `tags` 数组中不能有重复值，值需符合 `^[a-z0-9-]{2,32}$` 正则
+- `links` 仅允许 http/https URL 或以 `./`、`../`、`/` 开头的工作区相对路径，列表中不得重复
+- `meta` 必须是 JSON 可序列化值，仅允许顶级键 `frontMatter`、`wordCount`、`readingTime`、`contributors`、`checksum`、`custom`
 - `children` 中的每个 ID 必须存在于同一索引中
 - `updatedAt` 必须是有效的 ISO 8601 时间戳
+
+#### 2.2.3 ScanConfig
+
+```typescript
+interface ScanConfig {
+  fileTypes: string[];
+  excludeFolders: string[];
+  maxDepth: number;
+  includeCodeComments: boolean;
+  maxFileSizeKB: number;
+  outputDir: string;
+  followSymlinks?: boolean;
+  incrementalCacheFile?: string;
+  throttleIntervalMs?: number;
+}
+```
+
+**约束条件**:
+
+- `followSymlinks` 默认关闭，仅在显式开启时解析符号链接
+- `incrementalCacheFile` 为相对路径，默认 `wiki-tree/.wiki-tree-cache.json`，写入时必须原子化
+- `throttleIntervalMs` 范围 0-5000，控制批量文件事件合并
+- 需与 4.2.2 中的扩展配置保持一致性，不允许出现额外未知字段
+
+#### 2.2.4 GenerationResult
+
+```typescript
+interface GenerationResult {
+  rootPath: string;
+  indexPath: string;
+  totalFilesScanned: number;
+  indexedDocuments: number;
+  skippedFiles: SkippedFile[];
+  durationMs: number;
+  warnings: string[];
+  incremental: {
+    enabled: boolean;
+    reusedEntries: number;
+    cachePath?: string;
+  };
+}
+
+interface SkippedFile {
+  path: string;
+  reason: "EXCLUDED" | "SIZE_LIMIT" | "UNSUPPORTED_TYPE" | "READ_ERROR";
+  message?: string;
+}
+```
+
+**约束条件**:
+
+- `totalFilesScanned` ≥ `indexedDocuments` ≥ 0
+- `skippedFiles` 仅包含被忽略文件，`reason` 必须匹配预定义枚举
+- `durationMs` 为毫秒整数，必须 ≥ 0
+- 当 `incremental.enabled` 为 true 时，`reusedEntries` > 0，且 `cachePath` 存在
+
+#### 2.2.5 DevServer
+
+```typescript
+interface DevServer {
+  port: number;
+  baseUrl: string;
+  stop(): Promise<void>;
+  reload(changedPath?: string): Promise<void>;
+  on(event: "request" | "error" | "close", listener: (payload: DevServerEvent) => void): void;
+  isRunning(): boolean;
+}
+
+interface DevServerEvent {
+  timestamp: string;
+  details?: Record<string, string>;
+}
+```
+
+**行为约束**:
+
+- `port` 与 `baseUrl` 在 `startServer` 成功后立即可用
+- `reload` 必须在 200ms 内完成热更新回调，否则返回超时错误
+- `stop` 需确保释放文件监听和端口资源，否则视为失败
+- `on` 注册的监听器支持一次性移除（`Disposable` 模式）
+
+#### 2.2.6 ExportResult
+
+```typescript
+interface ExportResult {
+  outputDir: string;
+  pageCount: number;
+  assetCount: number;
+  warnings: string[];
+  durationMs: number;
+  checksum: string;
+}
+```
+
+**约束条件**:
+
+- `outputDir` 必须与传入参数一致并存在
+- `pageCount` ≥ 0 且等于导出的 HTML 文档数量
+- `checksum` 使用 SHA-256，对导出的 `manifest.json` 内容进行签名
+- `warnings` 捕获非致命问题，最多 50 条，需在 UI 中可视化
+
+### 2.3 增量扫描策略
+
+**触发条件**:
+
+- 启动插件后首次生成索引或用户执行 `wikiTree.generateIndex` 命令
+- 监听 VSCode 文件系统事件（创建、修改、删除）并在防抖窗口后批量处理
+- 手动触发 `wikiTree.refresh` 时强制进行一次完整扫描
+
+**缓存与对比逻辑**:
+
+- 将文件 `mtime`、`size`、`checksum` 缓存于 `incrementalCacheFile` 中，作为下次扫描的对比基线
+- 仅当元数据发生变化或文件类型从不支持转为支持时才重新解析内容
+- 删除文件时立即从索引和缓存中移除对应节点，并记录在 `GenerationResult.skippedFiles` 中
+
+**失败回退策略**:
+
+- 任何阶段出现异常立即回退至全量扫描路径，确保索引与实际文件一致
+- 回退时需记录触发异常的文件路径和错误类型，供 Telemetry 与错误提示复用
+- 当连续三次增量失败时自动禁用增量模式并提示用户手动排查
+
+**性能验收指标**:
+
+- 增量扫描在 500ms 内完成 50 个以内文件的更新
+- 缓存文件写入需为原子操作（临时文件 + rename），避免部分写入导致损坏
+- 缓存文件大小不得超过 2MB，超过时自动压缩或强制重建
 
 ---
 
@@ -353,6 +495,39 @@ interface ExtensionConfig {
 - `maxFileSizeKB` 必须是正整数，范围 1-10240
 - `outputDir` 不能包含路径分隔符以外的特殊字符
 
+### 4.3 索引生成流程
+
+**处理阶段**:
+
+- 发现阶段: 使用 `ScanConfig` 遍历工作区，过滤不支持的文件与目录
+- 富化阶段: 根据文件类型提取标题、摘要、标签、语言、链接，并构建 `WikiNode` 实例
+- 组装阶段: 构建父子层级、计算统计信息，生成 `WikiIndex` 对象
+- 持久化阶段: 将 `WikiIndex` 序列化为 JSON，写入 `index.json` 并同步更新缓存
+
+**一致性保障**:
+
+- 在持久化前对数据结构进行 schema 验证，避免产生不合法索引
+- 写入使用临时文件 + rename 确保原子性，同时更新 `GenerationResult.indexPath`
+- 每轮生成完成后广播事件供 UI（TreeView、状态栏）刷新
+
+### 4.4 Webview 使用规范
+
+**启用场景**:
+
+- 仅当用户打开树节点的扩展说明或运行静态导出报告时才加载 Webview
+- Webview 内容为本地打包 HTML，禁止外部网络请求，使用 `vscode-resource` URI 引入资源
+
+**安全要求**:
+
+- 通过 `Content-Security-Policy` 禁止内联脚本和远程脚本
+- 所有消息通信通过 `postMessage`，必须验证消息来源和负载类型
+- Webview 关闭时释放资源，避免内存泄露
+
+**无障碍与本地化**:
+
+- 文本需支持中英文切换（依据 VSCode 语言包）
+- 键盘导航覆盖所有交互元素，遵循 VSCode 主题色变量
+
 ---
 
 ## 5. 错误处理规范
@@ -445,6 +620,22 @@ class ExportError extends WikiTreeError {
 - 大型项目 (10k+ 文件) 性能
 - 并发访问时的数据一致性
 - VSCode API 集成正确性
+
+### 6.3 增量扫描测试场景
+
+**必须覆盖的用例**:
+
+- 单文件更新: 修改 Markdown、代码、二进制文件，验证仅更新受影响节点
+- 批量重命名: 同一目录内 20 个文件改名，确认缓存与索引同步更新
+- 符号链接: 在启用 `followSymlinks` 后扫描，确保不会产生循环引用
+- 缓存损坏: 人为破坏 `incrementalCacheFile`，验证自动回退到全量扫描
+- 大规模删除: 删除 1000 个节点并触发刷新，确认索引中不存在孤儿节点
+
+**验证指标**:
+
+- 每个场景记录 `GenerationResult` 度量并与性能目标对比
+- 对比导出索引与上一版本差异，确保变更最小化且准确
+- 测试日志需包含缓存命中率、回退次数、警告信息，支持 CI 中自动分析
 
 ---
 
