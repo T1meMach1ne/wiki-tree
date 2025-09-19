@@ -1,0 +1,169 @@
+{
+  "name": "wiki-tree",
+  "displayName": "Wiki Tree",
+  "description": "VSCode 项目文件夹维基知识库插件",
+  "version": "0.1.0",
+  "publisher": "wiki-tree",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/wiki-tree.git"
+  },
+  "engines": {
+    "vscode": "^1.84.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "wikiTree.generateIndex",
+        "title": "Wiki Tree: 生成文档索引",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "wikiTree.search",
+        "title": "Wiki Tree: 搜索文档",
+        "icon": "$(search)"
+      },
+      {
+        "command": "wikiTree.refresh",
+        "title": "Wiki Tree: 刷新树视图"
+      },
+      {
+        "command": "wikiTree.previewDocument",
+        "title": "Wiki Tree: 预览文档"
+      },
+      {
+        "command": "wikiTree.openFile",
+        "title": "Wiki Tree: 打开文件"
+      },
+      {
+        "command": "wikiTree.startServer",
+        "title": "Wiki Tree: 启动文档站点"
+      },
+      {
+        "command": "wikiTree.exportStatic",
+        "title": "Wiki Tree: 导出静态站点"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "wikiTree",
+          "title": "Wiki Tree",
+          "icon": "resources/icons/wiki-tree.svg"
+        }
+      ]
+    },
+    "views": {
+      "wikiTree": [
+        {
+          "icon": "resources/icons/wiki-tree.svg",
+          "id": "wikiTreeView",
+          "name": "Wiki Tree",
+          "when": "always"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Wiki Tree",
+      "properties": {
+        "wikiTree.fileTypes": {
+          "type": "array",
+          "default": [
+            "md",
+            "txt",
+            "rst",
+            "adoc",
+            "java",
+            "cs",
+            "js",
+            "ts",
+            "html",
+            "vue"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "description": "要扫描的文件类型"
+        },
+        "wikiTree.excludeFolders": {
+          "type": "array",
+          "default": [
+            "node_modules",
+            ".git",
+            "dist",
+            "build",
+            "target"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "description": "要排除的文件夹"
+        },
+        "wikiTree.includeCodeComments": {
+          "type": "boolean",
+          "default": false,
+          "description": "是否包含代码注释"
+        },
+        "wikiTree.maxDepth": {
+          "type": "number",
+          "default": 10,
+          "minimum": 1,
+          "description": "扫描的最大深度"
+        },
+        "wikiTree.maxFileSizeKB": {
+          "type": "number",
+          "default": 1024,
+          "minimum": 1,
+          "description": "扫描文件的大小上限 (KB)"
+        },
+        "wikiTree.outputDir": {
+          "type": "string",
+          "default": ".wiki-tree",
+          "description": "索引文件输出目录"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "node ./scripts/build.js",
+    "watch": "node ./scripts/build.js --watch",
+    "lint": "eslint \"src/**/*.ts\" \"test/**/*.ts\"",
+    "lint:fix": "eslint --fix \"src/**/*.ts\" \"test/**/*.ts\"",
+    "format": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\"",
+    "format:fix": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "clean": "rimraf out .vscode-test .jest-cache",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.5",
+    "@types/markdown-it": "^14.1.2",
+    "@types/node": "^18.18.0",
+    "@types/vscode": "^1.84.0",
+    "@typescript-eslint/eslint-plugin": "^6.9.0",
+    "@typescript-eslint/parser": "^6.9.0",
+    "@vscode/test-electron": "^2.3.6",
+    "@vscode/vsce": "^2.22.0",
+    "esbuild": "^0.19.5",
+    "eslint": "^8.52.0",
+    "eslint-config-prettier": "^9.0.0",
+    "jest": "^29.7.0",
+    "prettier": "^3.0.3",
+    "rimraf": "^5.0.5",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "chokidar": "^3.5.3",
+    "fuse.js": "^7.0.0",
+    "gray-matter": "^4.0.3",
+    "markdown-it": "^13.0.2"
+  }
+}
