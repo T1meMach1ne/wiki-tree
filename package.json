@@ -33,7 +33,8 @@
       },
       {
         "command": "wikiTree.refresh",
-        "title": "Wiki Tree: 刷新树视图"
+        "title": "Wiki Tree: 刷新树视图",
+        "icon": "$(sync)"
       },
       {
         "command": "wikiTree.previewDocument",
@@ -129,6 +130,37 @@
           "description": "索引文件输出目录"
         }
       }
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "wikiTree.generateIndex",
+          "when": "view == wikiTreeView",
+          "group": "navigation@1"
+        },
+        {
+          "command": "wikiTree.refresh",
+          "when": "view == wikiTreeView",
+          "group": "navigation@2"
+        },
+        {
+          "command": "wikiTree.search",
+          "when": "view == wikiTreeView",
+          "group": "navigation@3"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "wikiTree.openFile",
+          "when": "viewItem == file",
+          "group": "navigation@1"
+        },
+        {
+          "command": "wikiTree.previewDocument",
+          "when": "viewItem == file",
+          "group": "navigation@2"
+        }
+      ]
     }
   },
   "scripts": {
