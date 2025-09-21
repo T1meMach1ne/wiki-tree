@@ -16,6 +16,9 @@
     "Other"
   ],
   "main": "./out/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "contributes": {
     "commands": [
       {
@@ -63,8 +66,7 @@
         {
           "icon": "resources/icons/wiki-tree.svg",
           "id": "wikiTreeView",
-          "name": "Wiki Tree",
-          "when": "always"
+          "name": "Wiki Tree"
         }
       ]
     },
