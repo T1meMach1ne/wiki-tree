@@ -24,6 +24,7 @@ export class WikiTreeGenerator {
       generatedNodes: 0,
       durationMs: 0,
       indexPath: '',
+      markdownPath: '',
       errors: [],
     };
 
@@ -43,6 +44,9 @@ export class WikiTreeGenerator {
       const indexPath = path.join(rootPath, config.outputDir, 'index.json');
       await this.writeIndexAtomic(indexPath, index);
       result.indexPath = indexPath;
+      const markdownPath = path.join(rootPath, config.outputDir, 'index.md');
+      await this.writeMarkdownIndex(markdownPath, index, rootPath);
+      result.markdownPath = markdownPath;
       result.durationMs = Date.now() - startTime;
 
       await this.validatePostconditions(result, config);
@@ -92,6 +96,16 @@ export class WikiTreeGenerator {
     }
     if (!result.indexPath.endsWith(path.join(config.outputDir, 'index.json'))) {
       throw new IndexGenerationError('索引输出路径不符合配置要求');
+    }
+    if (!result.markdownPath) {
+      throw new IndexGenerationError('未提供 Markdown 索引路径');
+    }
+    const markdownExists = await pathExists(result.markdownPath);
+    if (!markdownExists) {
+      throw new IndexGenerationError('未生成 Markdown 索引文件: ' + result.markdownPath);
+    }
+    if (!result.markdownPath.endsWith(path.join(config.outputDir, 'index.md'))) {
+      throw new IndexGenerationError('Markdown 索引输出路径不符合配置要求');
     }
   }
 
@@ -200,6 +214,124 @@ export class WikiTreeGenerator {
     const tempPath = indexPath + '.tmp';
     await fs.writeFile(tempPath, JSON.stringify(index, null, 2), 'utf-8');
     await fs.rename(tempPath, indexPath);
+  }
+
+  private async writeMarkdownIndex(
+    markdownPath: string,
+    index: WikiIndex,
+    rootPath: string
+  ): Promise<void> {
+    const directory = path.dirname(markdownPath);
+    await ensureDirectory(directory);
+    const document = await this.buildMarkdownDocument(index, rootPath);
+    await fs.writeFile(markdownPath, document, 'utf-8');
+  }
+
+  private async buildMarkdownDocument(index: WikiIndex, rootPath: string): Promise<string> {
+    const introduction = await this.buildRepositoryIntroduction(rootPath);
+    const metrics = this.collectMetrics(index.nodes);
+    const outline = this.buildDirectoryOutline(index.nodes);
+    const outlineSection = outline.length > 0 ? outline : '_目录暂无内容_';
+    return [
+      '# 仓库索引',
+      '',
+      '## 仓库介绍',
+      '',
+      introduction,
+      '',
+      '## 仓库统计',
+      '',
+      `- 根目录: ${index.root}`,
+      `- 目录数: ${metrics.folderCount}`,
+      `- 文件数: ${metrics.fileCount}`,
+      `- 生成时间: ${index.generatedAt}`,
+      '',
+      '## 目录大纲',
+      '',
+      outlineSection,
+      '',
+    ].join('\n');
+  }
+
+  private async buildRepositoryIntroduction(rootPath: string): Promise<string> {
+    const candidates = ['README.md', 'readme.md', 'README.MD'];
+    for (const candidate of candidates) {
+      const candidatePath = path.join(rootPath, candidate);
+      const exists = await pathExists(candidatePath);
+      if (!exists) {
+        continue;
+      }
+      try {
+        const raw = await fs.readFile(candidatePath, 'utf-8');
+        const parsed = matter(raw);
+        const summary = this.extractMarkdownText(parsed.content, 400);
+        if (summary) {
+          return summary;
+        }
+      } catch (error) {
+        continue;
+      }
+    }
+    return '未找到仓库介绍，请添加 README.md。';
+  }
+
+  private extractMarkdownText(content: string, maxLength: number): string | undefined {
+    const tokens = this.markdown.parse(content, {});
+    const parts: string[] = [];
+    for (const token of tokens) {
+      if (token.type !== 'inline') {
+        continue;
+      }
+      const text = token.content.trim();
+      if (!text) {
+        continue;
+      }
+      parts.push(text);
+      const combined = parts.join('\n').trim();
+      if (combined.length >= maxLength) {
+        return combined.slice(0, maxLength).trim();
+      }
+    }
+    const combined = parts.join('\n').trim();
+    return combined.length > 0 ? combined.slice(0, maxLength).trim() : undefined;
+  }
+
+  private buildDirectoryOutline(nodes: WikiNode[], depth = 0): string {
+    if (!nodes || nodes.length === 0) {
+      return '';
+    }
+    const lines: string[] = [];
+    const indent = '  '.repeat(depth);
+    for (const node of nodes) {
+      const summary = node.summary ? ` — ${node.summary}` : '';
+      lines.push(`${indent}- ${node.title}${summary}`);
+      if (node.type === 'folder' && node.children && node.children.length > 0) {
+        const childLines = this.buildDirectoryOutline(node.children, depth + 1);
+        if (childLines.length > 0) {
+          lines.push(childLines);
+        }
+      }
+    }
+    return lines.join('\n');
+  }
+
+  private collectMetrics(nodes: WikiNode[]): { folderCount: number; fileCount: number } {
+    let folderCount = 0;
+    let fileCount = 0;
+    const walk = (items: WikiNode[]): void => {
+      for (const item of items) {
+        if (item.type === 'folder') {
+          folderCount += 1;
+          if (item.children) {
+            walk(item.children);
+          }
+        } else {
+          fileCount += 1;
+        }
+      }
+    };
+    walk(nodes);
+    return { folderCount, fileCount };
   }
 }
 

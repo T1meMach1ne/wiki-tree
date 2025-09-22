@@ -44,5 +44,12 @@ describe('WikiTreeGenerator', () => {
     expect(index.nodes.length).toBeGreaterThan(0);
     const titles = index.nodes.map((node) => node.title);
     expect(titles).toContain('README.md');
+
+    const markdownPath = path.join(workspace, config.outputDir, 'index.md');
+    expect(result.markdownPath).toBe(markdownPath);
+    const markdownContent = await fs.readFile(markdownPath, 'utf-8');
+    expect(markdownContent).toContain('# 仓库索引');
+    expect(markdownContent).toContain('## 目录大纲');
+    expect(markdownContent).toMatch(/README\.md/);
   });
 });

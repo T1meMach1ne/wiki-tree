@@ -108,10 +108,14 @@ export class WikiTreeGenerator {
         nodes,
       };
 
-      // 写入索引文件
+      // 写入索引文件与 Markdown 摘要
       const indexPath = path.join(rootPath, config.outputDir, "index.json");
       await this.writeIndexAtomic(indexPath, index);
       result.indexPath = indexPath;
+
+      const markdownPath = path.join(rootPath, config.outputDir, "index.md");
+      await this.writeMarkdownIndex(markdownPath, index, rootPath);
+      result.markdownPath = markdownPath;
 
       result.durationMs = Date.now() - startTime;
 

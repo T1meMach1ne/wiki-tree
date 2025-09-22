@@ -23,7 +23,7 @@
 | 术语/缩写              | 说明                                                     | 关联章节 |
 | ---------------------- | -------------------------------------------------------- | -------- |
 | 知识节点（WikiNode）   | 代表一个文件、目录或知识片段，是 TreeView 的最小显示单元 | 4.1、4.2 |
-| 索引文件（index.json） | 扫描生成的结构化数据文件，驱动 TreeView、搜索和预览      | 2.2、4.3 |
+| 索引文件（index.json/index.md） | 扫描生成的结构化数据文件与 Markdown 摘要，驱动 TreeView、搜索和预览      | 2.2、4.3 |
 | 扫描配置（ScanConfig） | 控制扫描范围、过滤规则、输出路径的参数集合               | 2.1、6.1 |
 | 增量扫描               | 仅处理变更文件以缩短耗时的扫描策略                       | 2.3、6.3 |
 | Webview                | 为复杂交互提供的轻量页面容器，本项目仅在必要场景启用     | 4.4      |
@@ -53,7 +53,7 @@ interface WikiTreeGenerator {
    * @returns 生成结果统计
    * @precondition rootPath 存在且可读
    * @precondition config 符合 ScanConfig 接口规范
-   * @postcondition 生成有效的 index.json 文件
+   * @postcondition 生成有效的 index.json 与 index.md 文件
    * @postcondition 返回的统计信息准确反映扫描结果
    * @throws FileAccessError 当文件系统访问失败
    * @throws ConfigValidationError 当配置验证失败
@@ -73,7 +73,7 @@ interface WikiTreeGenerator {
 
 **后置条件 (Postconditions)**:
 
-- 在 `${rootPath}/${config.outputDir}/index.json` 生成有效的索引文件
+- 在 `${rootPath}/${config.outputDir}` 目录下生成有效的 `index.json`（结构化数据）与 `index.md`（Markdown 摘要）文件
 - 索引文件符合 `WikiIndex` 接口规范
 - 返回的 `GenerationResult` 包含准确的统计信息
 - 扫描过程中不会修改源文件
@@ -138,7 +138,7 @@ interface StaticExporter {
 **导出物规范**:
 
 - 输出目录必须位于工作区内且可写，导出前需清理旧版本或创建全新目录
-- 输出内容包含 `index.json` 副本、`documents/`（HTML 文档）、`assets/`（静态资源）、`manifest.json`（导出元数据）
+- 输出内容包含 `index.json` 副本、`index.md` 摘要、`documents/`（HTML 文档）、`assets/`（静态资源）、`manifest.json`（导出元数据）
 - `documents/` 中每个节点文件命名为 `{wikiNodeId}.html`，内容使用 UTF-8 编码并携带 `<meta charset="utf-8">`
 - 所有资源引用使用相对路径，禁止绝对磁盘路径或 `file://` 协议
 
@@ -492,7 +492,7 @@ interface ExtensionConfig {
 - 发现阶段: 使用 `ScanConfig` 遍历工作区，过滤不支持的文件与目录
 - 富化阶段: 根据文件类型提取标题、摘要、标签、语言、链接，并构建 `WikiNode` 实例
 - 组装阶段: 构建父子层级、计算统计信息，生成 `WikiIndex` 对象
-- 持久化阶段: 将 `WikiIndex` 序列化为 JSON，写入 `index.json` 并同步更新缓存
+- 持久化阶段: 将 `WikiIndex` 序列化为 JSON 写入 `index.json`，并生成包含仓库介绍与大纲的 `index.md`
 
 **一致性保障**:
 

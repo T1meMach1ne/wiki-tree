@@ -39,6 +39,7 @@ export interface GenerationResult {
   generatedNodes: number;
   durationMs: number;
   indexPath: string;
+  markdownPath: string;
   errors: GenerationError[];
 }
 
