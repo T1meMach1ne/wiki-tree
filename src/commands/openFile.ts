@@ -11,6 +11,11 @@ export function registerOpenFileCommand(context: vscode.ExtensionContext): vscod
       }
       const document = await vscode.workspace.openTextDocument(uri);
       await vscode.window.showTextDocument(document, { preview: false });
+      const ext = uri.fsPath.split('.').pop()?.toLowerCase();
+      const markdownExtensions = ['md', 'markdown', 'mdown', 'mkd'];
+      if (ext && markdownExtensions.includes(ext)) {
+        await vscode.commands.executeCommand('markdown.showPreviewToSide', uri);
+      }
     }
   );
   context.subscriptions.push(disposable);

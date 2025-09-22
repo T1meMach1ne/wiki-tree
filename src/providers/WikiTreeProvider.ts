@@ -28,6 +28,13 @@ export class WikiTreeProvider implements vscode.TreeDataProvider<WikiNode> {
     item.resourceUri = vscode.Uri.file(element.path);
     item.iconPath =
       element.type === 'folder' ? new vscode.ThemeIcon('folder') : new vscode.ThemeIcon('book');
+    if (element.type === 'file') {
+      item.command = {
+        command: 'wikiTree.openFile',
+        title: 'Open File',
+        arguments: [vscode.Uri.file(element.path)],
+      };
+    }
     return item;
   }
 
