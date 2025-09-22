@@ -1,0 +1,342 @@
+{
+  "version": "0.1.0",
+  "generatedAt": "2025-09-22T14:06:37.334Z",
+  "root": "d:\\JavaProject\\wiki-tree",
+  "nodes": [
+    {
+      "id": "AGENTS.md",
+      "title": "AGENTS.md",
+      "path": "d:\\JavaProject\\wiki-tree\\AGENTS.md",
+      "type": "file",
+      "summary": "Repository Guidelines"
+    },
+    {
+      "id": "docs",
+      "title": "docs",
+      "path": "d:\\JavaProject\\wiki-tree\\docs",
+      "type": "folder",
+      "children": [
+        {
+          "id": "docs/API-Reference.md",
+          "title": "API-Reference.md",
+          "path": "d:\\JavaProject\\wiki-tree\\docs\\API-Reference.md",
+          "type": "file",
+          "summary": "Wiki Tree API Reference"
+        },
+        {
+          "id": "docs/Frontend-Tech-Stack.md",
+          "title": "Frontend-Tech-Stack.md",
+          "path": "d:\\JavaProject\\wiki-tree\\docs\\Frontend-Tech-Stack.md",
+          "type": "file",
+          "summary": "Wiki Tree VSCode 插件最终技术栈方案"
+        },
+        {
+          "id": "docs/Implementation-Guide.md",
+          "title": "Implementation-Guide.md",
+          "path": "d:\\JavaProject\\wiki-tree\\docs\\Implementation-Guide.md",
+          "type": "file",
+          "summary": "Wiki Tree 实现指南"
+        },
+        {
+          "id": "docs/Quick-Start.md",
+          "title": "Quick-Start.md",
+          "path": "d:\\JavaProject\\wiki-tree\\docs\\Quick-Start.md",
+          "type": "file",
+          "summary": "Wiki Tree 快速开始指南"
+        },
+        {
+          "id": "docs/README.md",
+          "title": "README.md",
+          "path": "d:\\JavaProject\\wiki-tree\\docs\\README.md",
+          "type": "file",
+          "summary": "Wiki Tree VSCode Extension - 文档索引"
+        },
+        {
+          "id": "docs/Specification.md",
+          "title": "Specification.md",
+          "path": "d:\\JavaProject\\wiki-tree\\docs\\Specification.md",
+          "type": "file",
+          "summary": "Wiki Tree VSCode Extension - Specification"
+        },
+        {
+          "id": "docs/Troubleshooting.md",
+          "title": "Troubleshooting.md",
+          "path": "d:\\JavaProject\\wiki-tree\\docs\\Troubleshooting.md",
+          "type": "file",
+          "summary": "Wiki Tree 故障排除指南"
+        }
+      ]
+    },
+    {
+      "id": "out",
+      "title": "out",
+      "path": "d:\\JavaProject\\wiki-tree\\out",
+      "type": "folder",
+      "children": [
+        {
+          "id": "out/extension.js",
+          "title": "extension.js",
+          "path": "d:\\JavaProject\\wiki-tree\\out\\extension.js",
+          "type": "file",
+          "summary": "\"use strict\";\nvar __create = Object.create;\nvar __defProp = Object.defineProperty;\nvar __getOwnPropDesc = Object.getOwnPropertyDescriptor;\nvar __getOwnPropNames"
+        }
+      ]
+    },
+    {
+      "id": "README.md",
+      "title": "README.md",
+      "path": "d:\\JavaProject\\wiki-tree\\README.md",
+      "type": "file",
+      "summary": "Wiki Tree - VSCode 项目文件夹维基知识库插件"
+    },
+    {
+      "id": "scripts",
+      "title": "scripts",
+      "path": "d:\\JavaProject\\wiki-tree\\scripts",
+      "type": "folder",
+      "children": [
+        {
+          "id": "scripts/build.js",
+          "title": "build.js",
+          "path": "d:\\JavaProject\\wiki-tree\\scripts\\build.js",
+          "type": "file",
+          "summary": "/* eslint-disable @typescript-eslint/no-var-requires */\nconst esbuild = require('esbuild');\nconst path = require('path');"
+        }
+      ]
+    },
+    {
+      "id": "src",
+      "title": "src",
+      "path": "d:\\JavaProject\\wiki-tree\\src",
+      "type": "folder",
+      "children": [
+        {
+          "id": "src/commands",
+          "title": "commands",
+          "path": "d:\\JavaProject\\wiki-tree\\src\\commands",
+          "type": "folder",
+          "children": [
+            {
+              "id": "src/commands/exportStatic.ts",
+              "title": "exportStatic.ts",
+              "path": "d:\\JavaProject\\wiki-tree\\src\\commands\\exportStatic.ts",
+              "type": "file",
+              "summary": "import * as vscode from 'vscode';\nimport StaticExporter from '../core/StaticExporter';\nimport { getCurrentIndexPath } from '../utils/state';\nimport { showErrorM"
+            },
+            {
+              "id": "src/commands/generateIndex.ts",
+              "title": "generateIndex.ts",
+              "path": "d:\\JavaProject\\wiki-tree\\src\\commands\\generateIndex.ts",
+              "type": "file",
+              "summary": "import * as vscode from 'vscode';\nimport WikiTreeGenerator from '../core/WikiTreeGenerator';\nimport { WikiTreeProvider } from '../providers/WikiTreeProvider';\ni"
+            },
+            {
+              "id": "src/commands/openFile.ts",
+              "title": "openFile.ts",
+              "path": "d:\\JavaProject\\wiki-tree\\src\\commands\\openFile.ts",
+              "type": "file",
+              "summary": "import * as vscode from 'vscode';\nimport { showErrorMessage } from '../utils/logger';"
+            },
+            {
+              "id": "src/commands/previewDocument.ts",
+              "title": "previewDocument.ts",
+              "path": "d:\\JavaProject\\wiki-tree\\src\\commands\\previewDocument.ts",
+              "type": "file",
+              "summary": "import * as vscode from 'vscode';\nimport { showErrorMessage } from '../utils/logger';"
+            },
+            {
+              "id": "src/commands/refresh.ts",
+              "title": "refresh.ts",
+              "path": "d:\\JavaProject\\wiki-tree\\src\\commands\\refresh.ts",
+              "type": "file",
+              "summary": "import * as vscode from 'vscode';\nimport { WikiTreeProvider } from '../providers/WikiTreeProvider';\nimport { getCurrentIndex } from '../utils/state';\nimport { s"
+            },
+            {
+              "id": "src/commands/search.ts",
+              "title": "search.ts",
+              "path": "d:\\JavaProject\\wiki-tree\\src\\commands\\search.ts",
+              "type": "file",
+              "summary": "import * as vscode from 'vscode';\nimport Fuse from 'fuse.js';\nimport { WikiNode } from '../types';\nimport { getCurrentIndex } from '../utils/state';\nimport { lo"
+            },
+            {
+              "id": "src/commands/startServer.ts",
+              "title": "startServer.ts",
+              "path": "d:\\JavaProject\\wiki-tree\\src\\commands\\startServer.ts",
+              "type": "file",
+              "summary": "import * as vscode from 'vscode';\nimport WikiSiteServer from '../core/WikiSiteServer';\nimport { getCurrentIndexPath } from '../utils/state';\nimport { showErrorM"
+            }
+          ]
+        },
+        {
+          "id": "src/core",
+          "title": "core",
+          "path": "d:\\JavaProject\\wiki-tree\\src\\core",
+          "type": "folder",
+          "children": [
+            {
+              "id": "src/core/errors.ts",
+              "title": "errors.ts",
+              "path": "d:\\JavaProject\\wiki-tree\\src\\core\\errors.ts",
+              "type": "file",
+              "summary": "export class FileAccessError extends Error {\n  constructor(\n    message: string,\n    public readonly filePath?: string\n  ) {\n    super(message);\n    this.name ="
+            },
+            {
+              "id": "src/core/StaticExporter.ts",
+              "title": "StaticExporter.ts",
+              "path": "d:\\JavaProject\\wiki-tree\\src\\core\\StaticExporter.ts",
+              "type": "file",
+              "summary": "import * as path from 'path';\nimport * as fs from 'fs/promises';\nimport { StaticExportResult, WikiIndex, WikiNode } from '../types';\nimport { IndexLoadError } f"
+            },
+            {
+              "id": "src/core/WikiSiteServer.ts",
+              "title": "WikiSiteServer.ts",
+              "path": "d:\\JavaProject\\wiki-tree\\src\\core\\WikiSiteServer.ts",
+              "type": "file",
+              "summary": "import * as http from 'http';\nimport * as fs from 'fs/promises';\nimport { DevServer } from '../types';\nimport { IndexLoadError, PortConflictError } from './erro"
+            },
+            {
+              "id": "src/core/WikiTreeGenerator.ts",
+              "title": "WikiTreeGenerator.ts",
+              "path": "d:\\JavaProject\\wiki-tree\\src\\core\\WikiTreeGenerator.ts",
+              "type": "file",
+              "summary": "import * as fs from 'fs/promises';\nimport * as path from 'path';\nimport matter from 'gray-matter';\nimport MarkdownIt from 'markdown-it';\nimport { ConfigValidati"
+            }
+          ]
+        },
+        {
+          "id": "src/extension.ts",
+          "title": "extension.ts",
+          "path": "d:\\JavaProject\\wiki-tree\\src\\extension.ts",
+          "type": "file",
+          "summary": "import * as vscode from 'vscode';\nimport WikiTreeGenerator from './core/WikiTreeGenerator';\nimport WikiSiteServer from './core/WikiSiteServer';\nimport StaticExp"
+        },
+        {
+          "id": "src/providers",
+          "title": "providers",
+          "path": "d:\\JavaProject\\wiki-tree\\src\\providers",
+          "type": "folder",
+          "children": [
+            {
+              "id": "src/providers/StatusBarManager.ts",
+              "title": "StatusBarManager.ts",
+              "path": "d:\\JavaProject\\wiki-tree\\src\\providers\\StatusBarManager.ts",
+              "type": "file",
+              "summary": "import * as vscode from 'vscode';\nimport { WorkspaceMetrics } from '../types';"
+            },
+            {
+              "id": "src/providers/WikiTreeProvider.ts",
+              "title": "WikiTreeProvider.ts",
+              "path": "d:\\JavaProject\\wiki-tree\\src\\providers\\WikiTreeProvider.ts",
+              "type": "file",
+              "summary": "import * as vscode from 'vscode';\nimport { WikiIndex, WikiNode } from '../types';"
+            }
+          ]
+        },
+        {
+          "id": "src/types",
+          "title": "types",
+          "path": "d:\\JavaProject\\wiki-tree\\src\\types",
+          "type": "folder",
+          "children": [
+            {
+              "id": "src/types/index.ts",
+              "title": "index.ts",
+              "path": "d:\\JavaProject\\wiki-tree\\src\\types\\index.ts",
+              "type": "file",
+              "summary": "export type NodeType = 'folder' | 'file';"
+            }
+          ]
+        },
+        {
+          "id": "src/utils",
+          "title": "utils",
+          "path": "d:\\JavaProject\\wiki-tree\\src\\utils",
+          "type": "folder",
+          "children": [
+            {
+              "id": "src/utils/config.ts",
+              "title": "config.ts",
+              "path": "d:\\JavaProject\\wiki-tree\\src\\utils\\config.ts",
+              "type": "file",
+              "summary": "import * as vscode from 'vscode';\nimport { ScanConfig } from '../types';"
+            },
+            {
+              "id": "src/utils/fileSystem.ts",
+              "title": "fileSystem.ts",
+              "path": "d:\\JavaProject\\wiki-tree\\src\\utils\\fileSystem.ts",
+              "type": "file",
+              "summary": "import * as fs from 'fs/promises';\nimport * as path from 'path';\nimport { ScanConfig, WikiNode } from '../types';"
+            },
+            {
+              "id": "src/utils/logger.ts",
+              "title": "logger.ts",
+              "path": "d:\\JavaProject\\wiki-tree\\src\\utils\\logger.ts",
+              "type": "file",
+              "summary": "import * as vscode from 'vscode';"
+            },
+            {
+              "id": "src/utils/state.ts",
+              "title": "state.ts",
+              "path": "d:\\JavaProject\\wiki-tree\\src\\utils\\state.ts",
+              "type": "file",
+              "summary": "import { WikiIndex } from '../types';"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "test",
+      "title": "test",
+      "path": "d:\\JavaProject\\wiki-tree\\test",
+      "type": "folder",
+      "children": [
+        {
+          "id": "test/core",
+          "title": "core",
+          "path": "d:\\JavaProject\\wiki-tree\\test\\core",
+          "type": "folder",
+          "children": [
+            {
+              "id": "test/core/WikiTreeGenerator.test.ts",
+              "title": "WikiTreeGenerator.test.ts",
+              "path": "d:\\JavaProject\\wiki-tree\\test\\core\\WikiTreeGenerator.test.ts",
+              "type": "file",
+              "summary": "import * as fs from 'fs/promises';\nimport * as path from 'path';\nimport * as os from 'os';\nimport WikiTreeGenerator from '../../src/core/WikiTreeGenerator';\nimp"
+            }
+          ]
+        },
+        {
+          "id": "test/providers",
+          "title": "providers",
+          "path": "d:\\JavaProject\\wiki-tree\\test\\providers",
+          "type": "folder",
+          "children": [
+            {
+              "id": "test/providers/WikiTreeProvider.test.ts",
+              "title": "WikiTreeProvider.test.ts",
+              "path": "d:\\JavaProject\\wiki-tree\\test\\providers\\WikiTreeProvider.test.ts",
+              "type": "file",
+              "summary": "jest.mock('vscode', () => require('../../__mocks__/vscode'), { virtual: true });"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "__mocks__",
+      "title": "__mocks__",
+      "path": "d:\\JavaProject\\wiki-tree\\__mocks__",
+      "type": "folder",
+      "children": [
+        {
+          "id": "__mocks__/vscode.ts",
+          "title": "vscode.ts",
+          "path": "d:\\JavaProject\\wiki-tree\\__mocks__\\vscode.ts",
+          "type": "file",
+          "summary": "class EventEmitter<T> {\n  private listeners: Array<(value: T) => void> = [];"
+        }
+      ]
+    }
+  ]
+}
