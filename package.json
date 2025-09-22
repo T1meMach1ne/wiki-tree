@@ -195,7 +195,6 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "chokidar": "^3.5.3",
     "fuse.js": "^7.0.0",
     "gray-matter": "^4.0.3",
     "markdown-it": "^13.0.2"

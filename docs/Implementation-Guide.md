@@ -39,7 +39,6 @@ yo code
     "ts-jest": "^29.1.1"
   },
   "dependencies": {
-    "chokidar": "^3.5.3",
     "markdown-it": "^13.0.2",
     "gray-matter": "^4.0.3",
     "fuse.js": "^7.0.0"
@@ -189,62 +188,30 @@ export class WikiTreeGenerator {
 }
 ```
 
-### 2. 文件监听器实现
+### 2. 刷新策略
+
+Wiki Tree 扩展采用“手动刷新”策略，不启用 chokidar 等库监控源码变化。TreeView 仅在用户通过命令触发时刷新数据：
+- `wikiTree.generateIndex` 负责重新扫描工作区并写入最新索引；
+- `wikiTree.refresh` 基于缓存索引重绘树视图，适合索引内容未变化的场景。
+
+视图按钮依赖 `package.json` 中 `contributes.menus.view/title` 的配置，在工具栏中提供“生成索引”“刷新”“搜索”等操作。命令实现位于 `src/commands/generateIndex.ts` 和 `src/commands/refresh.ts`，核心逻辑示例如下：
 
 ```typescript
-// src/core/FileWatcher.ts
-import * as chokidar from "chokidar";
-
-export class FileWatcher {
-  private watcher?: chokidar.FSWatcher;
-  private onChangeCallback?: (filePath: string) => void;
-
-  start(
-    rootPath: string,
-    config: ScanConfig,
-    onChange: (filePath: string) => void
-  ): void {
-    this.onChangeCallback = onChange;
-
-    const watchPatterns = config.fileTypes.map((ext) =>
-      path.join(rootPath, `**/*.${ext}`)
-    );
-
-    this.watcher = chokidar.watch(watchPatterns, {
-      ignored: config.excludeFolders.map((folder) =>
-        path.join(rootPath, folder, "**")
-      ),
-      ignoreInitial: true,
-      persistent: true,
-    });
-
-    this.watcher
-      .on("add", this.handleFileChange.bind(this))
-      .on("change", this.handleFileChange.bind(this))
-      .on("unlink", this.handleFileChange.bind(this))
-      .on("error", (error) => {
-        console.error("文件监听错误:", error);
-      });
-  }
-
-  stop(): void {
-    if (this.watcher) {
-      this.watcher.close();
-      this.watcher = undefined;
+// src/commands/refresh.ts
+export function registerRefreshCommand(
+  context: vscode.ExtensionContext,
+  provider: WikiTreeProvider
+): vscode.Disposable {
+  const disposable = vscode.commands.registerCommand('wikiTree.refresh', () => {
+    const index = getCurrentIndex();
+    if (!index) {
+      showErrorMessage('请先生成索引');
+      return;
     }
-  }
-
-  private handleFileChange(filePath: string): void {
-    if (this.onChangeCallback) {
-      // 防抖处理，避免频繁触发
-      clearTimeout(this.debounceTimer);
-      this.debounceTimer = setTimeout(() => {
-        this.onChangeCallback!(filePath);
-      }, 300);
-    }
-  }
-
-  private debounceTimer?: NodeJS.Timeout;
+    provider.refresh();
+  });
+  context.subscriptions.push(disposable);
+  return disposable;
 }
 ```
 
