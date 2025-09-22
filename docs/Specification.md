@@ -20,13 +20,13 @@
 
 ### 1.3 术语说明
 
-| 术语/缩写 | 说明 | 关联章节 |
-| -------- | ---- | -------- |
-| 知识节点（WikiNode） | 代表一个文件、目录或知识片段，是 TreeView 的最小显示单元 | 4.1、4.2 |
-| 索引文件（index.json） | 扫描生成的结构化数据文件，驱动 TreeView、搜索和预览 | 2.2、4.3 |
-| 扫描配置（ScanConfig） | 控制扫描范围、过滤规则、输出路径的参数集合 | 2.1、6.1 |
-| 增量扫描 | 仅处理变更文件以缩短耗时的扫描策略 | 2.3、6.3 |
-| Webview | 为复杂交互提供的轻量页面容器，本项目仅在必要场景启用 | 4.4 |
+| 术语/缩写              | 说明                                                     | 关联章节 |
+| ---------------------- | -------------------------------------------------------- | -------- |
+| 知识节点（WikiNode）   | 代表一个文件、目录或知识片段，是 TreeView 的最小显示单元 | 4.1、4.2 |
+| 索引文件（index.json） | 扫描生成的结构化数据文件，驱动 TreeView、搜索和预览      | 2.2、4.3 |
+| 扫描配置（ScanConfig） | 控制扫描范围、过滤规则、输出路径的参数集合               | 2.1、6.1 |
+| 增量扫描               | 仅处理变更文件以缩短耗时的扫描策略                       | 2.3、6.3 |
+| Webview                | 为复杂交互提供的轻量页面容器，本项目仅在必要场景启用     | 4.4      |
 
 ### 1.4 相关文档与依赖
 
@@ -35,6 +35,7 @@
 - 《Frontend-Tech-Stack.md》：VSCode 插件技术栈决策与优化指南。
 - 《Quick-Start.md》：团队成员快速参与本项目的操作手册。
 - 《Troubleshooting.md》：常见问题与排障流程。
+
 ---
 
 ## 2. 功能规格说明
@@ -57,10 +58,7 @@ interface WikiTreeGenerator {
    * @throws FileAccessError 当文件系统访问失败
    * @throws ConfigValidationError 当配置验证失败
    */
-  generateIndex(
-    rootPath: string,
-    config: ScanConfig
-  ): Promise<GenerationResult>;
+  generateIndex(rootPath: string, config: ScanConfig): Promise<GenerationResult>;
 }
 ```
 
@@ -150,7 +148,6 @@ interface StaticExporter {
 - 失败时需回滚对 `outputDir` 的改动并返回部分失败详情
 - 通过校验所有 `links` 在导出目录中均能找到对应文件或外部 URL 可访问（HEAD 200/3xx）
 
-
 ### 2.2 数据结构规范
 
 #### 2.2.1 WikiIndex
@@ -175,14 +172,7 @@ interface WikiIndex {
 #### 2.2.2 WikiNode
 
 ```typescript
-type NodeType =
-  | "folder"
-  | "document"
-  | "config"
-  | "readme"
-  | "code"
-  | "asset"
-  | "other";
+type NodeType = 'folder' | 'document' | 'config' | 'readme' | 'code' | 'asset' | 'other';
 
 interface WikiNode {
   id: string; // 唯一标识符
@@ -258,7 +248,7 @@ interface GenerationResult {
 
 interface SkippedFile {
   path: string;
-  reason: "EXCLUDED" | "SIZE_LIMIT" | "UNSUPPORTED_TYPE" | "READ_ERROR";
+  reason: 'EXCLUDED' | 'SIZE_LIMIT' | 'UNSUPPORTED_TYPE' | 'READ_ERROR';
   message?: string;
 }
 ```
@@ -278,7 +268,7 @@ interface DevServer {
   baseUrl: string;
   stop(): Promise<void>;
   reload(changedPath?: string): Promise<void>;
-  on(event: "request" | "error" | "close", listener: (payload: DevServerEvent) => void): void;
+  on(event: 'request' | 'error' | 'close', listener: (payload: DevServerEvent) => void): void;
   isRunning(): boolean;
 }
 
@@ -405,28 +395,28 @@ namespace Commands {
    * @precondition 存在活跃的VSCode工作区
    * @postcondition 生成或更新JSON索引文件，刷新TreeView
    */
-  const GENERATE_INDEX = "wikiTree.generateIndex";
+  const GENERATE_INDEX = 'wikiTree.generateIndex';
 
   /**
    * 打开搜索界面
    * @precondition 存在有效的索引文件
    * @postcondition 显示VSCode QuickPick搜索界面
    */
-  const SEARCH = "wikiTree.search";
+  const SEARCH = 'wikiTree.search';
 
   /**
    * 刷新文件树
    * @precondition TreeView已初始化
    * @postcondition 重新扫描并更新TreeView显示
    */
-  const REFRESH = "wikiTree.refresh";
+  const REFRESH = 'wikiTree.refresh';
 
   /**
    * 预览文档
    * @precondition 选中有效的文档节点
    * @postcondition 在VSCode编辑器中打开或显示Markdown预览
    */
-  const PREVIEW_DOCUMENT = "wikiTree.previewDocument";
+  const PREVIEW_DOCUMENT = 'wikiTree.previewDocument';
 }
 ```
 
@@ -438,27 +428,27 @@ namespace Commands {
 // 插件技术栈配置
 const TECH_STACK = {
   // 构建工具
-  bundler: "esbuild", // 替代Vite，更适合VSCode插件
+  bundler: 'esbuild', // 替代Vite，更适合VSCode插件
 
   // 语言和运行时
-  language: "TypeScript 5.2+",
-  runtime: "Node.js 18.x LTS+",
+  language: 'TypeScript 5.2+',
+  runtime: 'Node.js 18.x LTS+',
 
   // VSCode API
   vscodeApi: {
-    treeView: "vscode.TreeDataProvider", // 文件树导航
-    quickPick: "vscode.QuickPick", // 搜索界面
-    commands: "vscode.commands", // 命令系统
-    statusBar: "vscode.StatusBarItem", // 状态栏显示
-    preview: "markdown.showPreview", // 文档预览
+    treeView: 'vscode.TreeDataProvider', // 文件树导航
+    quickPick: 'vscode.QuickPick', // 搜索界面
+    commands: 'vscode.commands', // 命令系统
+    statusBar: 'vscode.StatusBarItem', // 状态栏显示
+    preview: 'markdown.showPreview', // 文档预览
   },
 
   // 核心依赖
   dependencies: {
-    fileWatcher: "chokidar ^3.5.3", // 文件监听
-    markdownParser: "markdown-it ^13.0.2", // Markdown解析
-    frontMatter: "gray-matter ^4.0.3", // Front Matter解析
-    fuzzySearch: "fuse.js ^7.0.0", // 模糊搜索
+    fileWatcher: 'chokidar ^3.5.3', // 文件监听
+    markdownParser: 'markdown-it ^13.0.2', // Markdown解析
+    frontMatter: 'gray-matter ^4.0.3', // Front Matter解析
+    fuzzySearch: 'fuse.js ^7.0.0', // 模糊搜索
   },
 };
 ```
@@ -543,37 +533,37 @@ abstract class WikiTreeError extends Error {
 
 // 配置相关异常
 class ConfigValidationError extends WikiTreeError {
-  readonly code = "CONFIG_VALIDATION";
+  readonly code = 'CONFIG_VALIDATION';
   readonly recoverable = true;
 }
 
 // 文件系统异常
 class FileAccessError extends WikiTreeError {
-  readonly code = "FILE_ACCESS";
+  readonly code = 'FILE_ACCESS';
   readonly recoverable = false;
 }
 
 // 索引生成异常
 class IndexGenerationError extends WikiTreeError {
-  readonly code = "INDEX_GENERATION";
+  readonly code = 'INDEX_GENERATION';
   readonly recoverable = true;
 }
 
 // 端口冲突异常
 class PortConflictError extends WikiTreeError {
-  readonly code = "PORT_CONFLICT";
+  readonly code = 'PORT_CONFLICT';
   readonly recoverable = true;
 }
 
 // 索引加载异常
 class IndexLoadError extends WikiTreeError {
-  readonly code = "INDEX_LOAD";
+  readonly code = 'INDEX_LOAD';
   readonly recoverable = true;
 }
 
 // 导出异常
 class ExportError extends WikiTreeError {
-  readonly code = "EXPORT_ERROR";
+  readonly code = 'EXPORT_ERROR';
   readonly recoverable = true;
 }
 ```
@@ -679,9 +669,9 @@ class ExportError extends WikiTreeError {
 ```typescript
 // TreeView 配置
 const TREE_VIEW_CONFIG = {
-  id: "wikiTreeExplorer",
-  name: "Wiki Tree",
-  location: "explorer", // 在资源管理器中显示
+  id: 'wikiTreeExplorer',
+  name: 'Wiki Tree',
+  location: 'explorer', // 在资源管理器中显示
   showCollapseAll: true, // 显示“折叠全部”按钮
   canSelectMany: false, // 单选模式
   defaultCollapsed: true, // 默认折叠所有节点
@@ -689,15 +679,15 @@ const TREE_VIEW_CONFIG = {
 
 // 状态栏配置
 const STATUS_BAR_CONFIG = {
-  alignment: "Right",
+  alignment: 'Right',
   priority: 100,
-  text: "$(book) {fileCount} 个文档",
-  tooltip: "Wiki Tree: {folderCount} 个文件夹, {fileCount} 个文档",
+  text: '$(book) {fileCount} 个文档',
+  tooltip: 'Wiki Tree: {folderCount} 个文件夹, {fileCount} 个文档',
 };
 
 // 搜索配置
 const SEARCH_CONFIG = {
-  placeholder: "搜索文档...",
+  placeholder: '搜索文档...',
   maxResults: 50,
   showDescription: true, // 显示文件路径
   showDetail: true, // 显示文档摘要
@@ -717,10 +707,10 @@ const SEARCH_CONFIG = {
 ```typescript
 // 用户友好的错误提示
 const ERROR_MESSAGES = {
-  FILE_NOT_FOUND: "找不到指定文件，请检查文件路径",
-  PERMISSION_DENIED: "没有访问权限，请检查文件夹权限设置",
-  SCAN_TIMEOUT: "文件扫描超时，请尝试缩小扫描范围",
-  INDEX_GENERATION: "索引生成失败，请检查文件权限和磁盘空间",
+  FILE_NOT_FOUND: '找不到指定文件，请检查文件路径',
+  PERMISSION_DENIED: '没有访问权限，请检查文件夹权限设置',
+  SCAN_TIMEOUT: '文件扫描超时，请尝试缩小扫描范围',
+  INDEX_GENERATION: '索引生成失败，请检查文件权限和磁盘空间',
 };
 
 // 错误对话框配置
@@ -766,40 +756,29 @@ const ERROR_DIALOG_CONFIG = {
 // 最终技术栈配置
 const FINAL_TECH_STACK = {
   // 架构
-  architecture: "VSCode Native Plugin",
+  architecture: 'VSCode Native Plugin',
 
   // 核心技术
-  language: "TypeScript 5.2+",
-  bundler: "esbuild",
-  runtime: "Node.js 18.x LTS+",
+  language: 'TypeScript 5.2+',
+  bundler: 'esbuild',
+  runtime: 'Node.js 18.x LTS+',
 
   // 文件类型支持
-  fileTypes: [
-    "md",
-    "txt",
-    "rst",
-    "adoc",
-    "java",
-    "cs",
-    "js",
-    "ts",
-    "html",
-    "vue",
-  ],
+  fileTypes: ['md', 'txt', 'rst', 'adoc', 'java', 'cs', 'js', 'ts', 'html', 'vue'],
 
   // 功能组件
-  fileTree: "vscode.TreeDataProvider",
-  search: "vscode.QuickPick + fuse.js",
-  preview: "markdown.showPreview",
-  fileWatcher: "chokidar",
+  fileTree: 'vscode.TreeDataProvider',
+  search: 'vscode.QuickPick + fuse.js',
+  preview: 'markdown.showPreview',
+  fileWatcher: 'chokidar',
 
   // 性能目标
   performance: {
-    pluginSize: "<2MB",
-    startupTime: "<500ms",
-    scanTime: "<5s (10k files)",
-    searchResponse: "<200ms",
-    treeInteraction: "<100ms",
+    pluginSize: '<2MB',
+    startupTime: '<500ms',
+    scanTime: '<5s (10k files)',
+    searchResponse: '<200ms',
+    treeInteraction: '<100ms',
   },
 };
 ```
@@ -809,4 +788,3 @@ const FINAL_TECH_STACK = {
 **规范状态**: ✅ **已确认完成** - 所有关键问题已解决，可开始开发实现
 
 本规范文档遵循软件工程 Specification 原则，为 Wiki Tree 插件的开发提供完整的行为定义、约束条件和质量要求。所有技术决策已经过充分评估和确认，可以直接指导开发实现。
-

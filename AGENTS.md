@@ -9,7 +9,6 @@ docs/ 保存了驱动扩展实现的权威规范（如 Specification.md、Implem
 首次开发前运行
 npm install 安装依赖。使用
 npm run compile 将 TypeScript 转译至 out/，日常迭代时改用
-npm run watch。通过
 npm run lint 和
 npm run format 执行本地质量闸口。使用
 npm test 覆盖单元与集成测试（更新覆盖率报告时追加 -- --coverage）。当 lint 与测试全部通过后，再执行

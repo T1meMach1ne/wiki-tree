@@ -166,7 +166,6 @@
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "node ./scripts/build.js",
-    "watch": "node ./scripts/build.js --watch",
     "lint": "eslint \"src/**/*.ts\" \"test/**/*.ts\"",
     "lint:fix": "eslint --fix \"src/**/*.ts\" \"test/**/*.ts\"",
     "format": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\"",

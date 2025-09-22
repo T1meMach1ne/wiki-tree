@@ -52,15 +52,15 @@ VSCode 插件架构
 
 ```javascript
 // build.js
-const esbuild = require("esbuild");
+const esbuild = require('esbuild');
 
 esbuild.build({
-  entryPoints: ["src/extension.ts"],
+  entryPoints: ['src/extension.ts'],
   bundle: true,
-  outfile: "out/extension.js",
-  external: ["vscode"],
-  format: "cjs",
-  platform: "node",
+  outfile: 'out/extension.js',
+  external: ['vscode'],
+  format: 'cjs',
+  platform: 'node',
   minify: true,
   sourcemap: true,
 });
@@ -73,9 +73,7 @@ esbuild.build({
 ```typescript
 // providers/WikiTreeProvider.ts
 export class WikiTreeProvider implements vscode.TreeDataProvider<WikiNode> {
-  private _onDidChangeTreeData = new vscode.EventEmitter<
-    WikiNode | undefined
-  >();
+  private _onDidChangeTreeData = new vscode.EventEmitter<WikiNode | undefined>();
   readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
 
   constructor(private wikiIndex: WikiIndex) {}
@@ -91,9 +89,7 @@ export class WikiTreeProvider implements vscode.TreeDataProvider<WikiNode> {
     item.contextValue = element.type;
     item.resourceUri = vscode.Uri.file(element.path);
     item.iconPath =
-      element.type === "folder"
-        ? new vscode.ThemeIcon("folder")
-        : new vscode.ThemeIcon("file");
+      element.type === 'folder' ? new vscode.ThemeIcon('folder') : new vscode.ThemeIcon('file');
 
     return item;
   }
@@ -110,12 +106,12 @@ export class WikiTreeProvider implements vscode.TreeDataProvider<WikiNode> {
 // commands/search.ts
 export async function showQuickSearch(wikiIndex: WikiIndex) {
   const fuse = new Fuse(wikiIndex.allNodes, {
-    keys: ["title", "summary", "tags"],
+    keys: ['title', 'summary', 'tags'],
     threshold: 0.3,
   });
 
   const quickPick = vscode.window.createQuickPick();
-  quickPick.placeholder = "搜索文档...";
+  quickPick.placeholder = '搜索文档...';
 
   quickPick.onDidChangeValue((value) => {
     if (value) {
@@ -138,11 +134,8 @@ export async function showQuickSearch(wikiIndex: WikiIndex) {
 // commands/preview.ts
 export async function previewDocument(node: WikiNode) {
   // 优先在编辑器中打开
-  if (node.path.endsWith(".md")) {
-    await vscode.commands.executeCommand(
-      "markdown.showPreview",
-      vscode.Uri.file(node.path)
-    );
+  if (node.path.endsWith('.md')) {
+    await vscode.commands.executeCommand('markdown.showPreview', vscode.Uri.file(node.path));
   } else {
     await vscode.window.showTextDocument(vscode.Uri.file(node.path));
   }
@@ -154,10 +147,7 @@ export async function previewDocument(node: WikiNode) {
 ```typescript
 // providers/StatusBarProvider.ts
 export class StatusBarProvider {
-  private statusBar = vscode.window.createStatusBarItem(
-    vscode.StatusBarAlignment.Right,
-    100
-  );
+  private statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
 
   updateStatus(wikiIndex: WikiIndex) {
     this.statusBar.text = `$(book) ${wikiIndex.totalFiles} 个文档`;
@@ -299,17 +289,14 @@ export class CacheManager {
 ```typescript
 // core/FileWatcher.ts
 export class FileWatcher {
-  private watcher = chokidar.watch("**/*.md", {
+  private watcher = chokidar.watch('**/*.md', {
     ignored: /node_modules|\.git/,
     persistent: true,
     ignoreInitial: true,
   });
 
   start(onFileChange: (path: string) => void) {
-    this.watcher
-      .on("add", onFileChange)
-      .on("change", onFileChange)
-      .on("unlink", onFileChange);
+    this.watcher.on('add', onFileChange).on('change', onFileChange).on('unlink', onFileChange);
   }
 }
 ```
@@ -322,13 +309,13 @@ export class FileWatcher {
 // utils/themeUtils.ts
 export function getThemedIcon(type: string): vscode.ThemeIcon {
   const iconMap = {
-    folder: "folder",
-    markdown: "markdown",
-    image: "file-media",
-    document: "file-text",
+    folder: 'folder',
+    markdown: 'markdown',
+    image: 'file-media',
+    document: 'file-text',
   };
 
-  return new vscode.ThemeIcon(iconMap[type] || "file");
+  return new vscode.ThemeIcon(iconMap[type] || 'file');
 }
 ```
 
@@ -355,8 +342,8 @@ export class ConfigPanel {
 
   constructor() {
     this.panel = vscode.window.createWebviewPanel(
-      "wikiTreeConfig",
-      "配置 Wiki Tree",
+      'wikiTreeConfig',
+      '配置 Wiki Tree',
       vscode.ViewColumn.One,
       { enableScripts: true }
     );
@@ -421,7 +408,6 @@ export class ConfigPanel {
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "node build.js",
-    "watch": "node build.js --watch",
     "test": "node ./out/test/runTest.js",
     "package": "vsce package",
     "publish": "vsce publish"
@@ -467,4 +453,3 @@ export class ConfigPanel {
 3. **可插拔能力**：为扫描策略、索引持久化、搜索引擎预留接口，便于后续接入 ElasticSearch 或自研服务。
 4. **性能量化**：在 CI 中执行基准脚本记录索引时间、内存占用，若指标回退立即阻断合并。
 5. **生态沉淀**：将公共组件（Tree Provider、状态栏、日志封装）抽成 npm 内部包，供其他 VSCode 插件复用。
-

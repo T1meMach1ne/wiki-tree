@@ -45,7 +45,6 @@ Wiki Tree 是一个轻量化的 VSCode 扩展，专为项目文档管理而设�
    ```
 
 2. **浏览文档树**
-
    - 在左侧资源管理器中查看 "Wiki Tree" 面板
    - 点击文档名称进行预览
 
@@ -124,13 +123,7 @@ code --install-extension your-publisher.wiki-tree
   ],
 
   // 排除的文件夹
-  "wikiTree.excludeFolders": [
-    "node_modules",
-    ".git",
-    "dist",
-    "build",
-    "target"
-  ],
+  "wikiTree.excludeFolders": ["node_modules", ".git", "dist", "build", "target"],
 
   // 扫描深度限制
   "wikiTree.maxDepth": 10,
@@ -178,7 +171,6 @@ code --install-extension your-publisher.wiki-tree
 
    ```bash
    npm run compile
-   npm run watch  # 监听模式
    ```
 
 4. **运行测试**
