@@ -32,12 +32,13 @@
 
 ## 5. 知识库生成
 
-- [ ] 5.1 生成项目概览文档
-- [ ] 5.2 生成代码结构文档
-- [ ] 5.3 生成依赖关系图谱（Mermaid 格式）
-- [ ] 5.6 实现 Mermaid 图谱可视化（Webview）
-- [ ] 5.4 生成 API 文档
-- [ ] 5.5 生成技术文档模板
+- [ ] 5.1 生成项目概览文档（Markdown + Mermaid）
+- [ ] 5.2 生成代码结构文档（Markdown + Mermaid 类图）
+- [ ] 5.3 生成依赖关系文档（Markdown + Mermaid 依赖图）
+- [ ] 5.4 实现视图切换功能（文本视图 ↔ Mermaid 视图）
+- [ ] 5.5 实现 Mermaid 图谱可视化（Webview 渲染）
+- [ ] 5.6 生成 API 文档
+- [ ] 5.7 生成技术文档模板
 
 ## 6. UI 增强
 
@@ -45,8 +46,9 @@
 - [ ] 6.2 添加依赖关系视图
 - [ ] 6.3 添加知识库查询界面
 - [ ] 6.4 添加 Mermaid 图谱可视化（Webview）
-- [ ] 6.5 实现 AI 问答界面（Chat UI）
-- [ ] 6.6 集成 AI 服务（OpenAI/Anthropic API）
+- [ ] 6.5 实现知识库文档视图切换 UI（文本/Mermaid 切换按钮）
+- [ ] 6.6 实现 AI 问答界面（Chat UI）
+- [ ] 6.7 集成 AI 服务（OpenAI/Anthropic API）
 
 ## 7. 性能优化
 

@@ -12,13 +12,21 @@ Wiki Tree - VSCode 项目文件夹维基知识库插件
 ## 仓库统计
 
 - 根目录: d:\JavaProject\wiki-tree
-- 目录数: 13
-- 文件数: 33
-- 生成时间: 2025-09-22T14:25:40.521Z
+- 目录数: 21
+- 文件数: 43
+- 生成时间: 2025-11-12T13:55:08.604Z
 
 ## 目录大纲
 
-- AGENTS.md — Repository Guidelines
+- .cursor
+  - commands
+    - openspec-apply.md — <!-- OPENSPEC:START -->
+    - openspec-archive.md — <!-- OPENSPEC:START -->
+**护栏规则**
+    - openspec-proposal.md — <!-- OPENSPEC:START -->
+- .wiki-tree
+  - index.md — 仓库索引
+- AGENTS.md — <!-- OPENSPEC:START -->
 - docs
   - API-Reference.md — Wiki Tree API Reference
   - Frontend-Tech-Stack.md — Wiki Tree VSCode 插件最终技术栈方案
@@ -27,6 +35,17 @@ Wiki Tree - VSCode 项目文件夹维基知识库插件
   - README.md — Wiki Tree VSCode Extension - 文档索引
   - Specification.md — Wiki Tree VSCode Extension - Specification
   - Troubleshooting.md — Wiki Tree 故障排除指南
+- openspec
+  - AGENTS.md — OpenSpec 使用指南
+  - changes
+    - transform-to-codebase-knowledge
+      - design.md — Design: AI 问答功能技术方案
+      - proposal.md — Change: 将 Wiki Tree 改造为代码库知识库插件
+      - specs
+        - codebase-knowledge
+          - spec.md — Codebase Knowledge Base Specification
+      - tasks.md — 1. 规范定义
+  - project.md — Project Context
 - out
   - extension.js — "use strict";
 var __create = Object.create;

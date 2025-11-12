@@ -163,6 +163,96 @@ await secretStorage.store('ai.apiKey', apiKey)
 2. 优化上下文提取算法
 3. 添加配置选项
 
+## Design: 知识库文档视图切换功能
+
+### Context
+
+用户需要知识库生成的结果能够以两种视图显示：
+1. **文本视图**：Markdown 格式的文档（类似 API-Reference.md）
+2. **Mermaid 视图**：可视化的图表（类图、依赖图等）
+
+### Decision: 视图切换实现方案
+
+**选择**: 在 Webview 中实现视图切换，使用按钮切换显示内容
+
+**理由**:
+- Webview 提供更好的交互体验
+- 可以同时加载两种格式的数据
+- 支持 Mermaid 图表的实时渲染
+
+**实现**:
+```typescript
+interface KnowledgeBaseView {
+  markdown: string;      // Markdown 文本内容
+  mermaid: string;       // Mermaid 图表代码
+  viewMode: 'text' | 'mermaid';  // 当前视图模式
+}
+
+// Webview 中切换视图
+function switchView(mode: 'text' | 'mermaid') {
+  if (mode === 'text') {
+    showMarkdown(content.markdown);
+  } else {
+    renderMermaid(content.mermaid);
+  }
+}
+```
+
+### Decision: Mermaid 图表生成策略
+
+**选择**: 为每种文档类型生成对应的 Mermaid 图表
+
+**图表类型**:
+1. **项目概览**: 使用 Mermaid 流程图展示项目结构
+2. **代码结构**: 使用 Mermaid 类图展示类、接口关系
+3. **依赖关系**: 使用 Mermaid 流程图展示模块依赖
+
+**实现**:
+```typescript
+class MermaidGenerator {
+  generateProjectOverview(project: ProjectInfo): string {
+    // 生成项目结构流程图
+  }
+  
+  generateClassDiagram(classes: ClassInfo[]): string {
+    // 生成类图
+  }
+  
+  generateDependencyGraph(dependencies: Dependency[]): string {
+    // 生成依赖关系图
+  }
+}
+```
+
+### Decision: 文档格式
+
+**选择**: 在 Markdown 文档中嵌入 Mermaid 代码块，并提供切换按钮
+
+**格式示例**:
+```markdown
+# 项目概览
+
+[切换到 Mermaid 视图](#)
+
+## 项目信息
+...
+
+## 技术栈
+...
+
+---
+
+<!-- Mermaid 视图 -->
+<div id="mermaid-view" style="display: none;">
+\`\`\`mermaid
+graph TD
+  A[项目根目录] --> B[src]
+  A --> C[docs]
+  ...
+\`\`\`
+</div>
+```
+
 ## Open Questions
 
 1. **是否需要支持代码引用和跳转？**
@@ -180,4 +270,8 @@ await secretStorage.store('ai.apiKey', apiKey)
 4. **是否需要支持多语言问答？**
    - 当前设计支持中文和英文
    - 是否需要扩展到其他语言？
+
+5. **Mermaid 图表是否需要支持交互？**
+   - 点击节点跳转到对应文件
+   - 缩放、拖拽等交互功能
 
